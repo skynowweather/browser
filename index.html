@@ -52,14 +52,14 @@
         }
         #webview {
             width: 100%;
-            height: calc(100% - 130px); /* Adjust height based on UI */
+            height: calc(100% - 130px);
             border: none;
         }
     </style>
 </head>
 <body>
     <div class="tabs" id="tabs"></div>
-    <input type="text" id="url" placeholder="Enter URL" />
+    <input type="text" id="url" placeholder="Enter URL or search query" />
     <button id="load">Go</button>
     <button id="newTab">New Tab</button>
     <button id="incognito">Incognito Mode</button>
@@ -100,13 +100,21 @@
         }
 
         document.getElementById('load').addEventListener('click', () => {
-            const url = urlInput.value;
-            if (url) {
+            const input = urlInput.value.trim();
+            let url;
+
+            if (input) {
+                if (input.startsWith('http://') || input.startsWith('https://')) {
+                    url = input; // Use the entered URL directly
+                } else {
+                    url = `https://www.google.com/search?q=${encodeURIComponent(input)}`; // Search query
+                }
+
                 if (tabs[activeTabIndex]) {
                     tabs[activeTabIndex].url = url;
                     loadUrl(url);
                 } else {
-                    createTab(url, url);
+                    createTab(input, url);
                     loadUrl(url);
                 }
             }
