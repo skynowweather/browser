@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Browser</title>
+    <style>
+        .tabs { display: flex; }
+        .tab { padding: 10px; cursor: pointer; border: 1px solid #ccc; }
+        .active { background-color: #ddd; }
+        #webview { width: 100%; height: 80vh; border: none; }
+    </style>
+</head>
+<body>
+    <div class="tabs" id="tabs"></div>
+    <input type="text" id="url" placeholder="Enter URL" />
+    <button id="load">Go</button>
+    <button id="newTab">New Tab</button>
+    <button id="incognito">Incognito Mode</button>
+    <br>
+    <iframe id="webview"></iframe>
+
+    <script>
+        const tabsContainer = document.getElementById('tabs');
+        const urlInput = document.getElementById('url');
+        const webview = document.getElementById('webview');
+        let activeTabIndex = 0;
+        const tabs = [];
+
+        function loadUrl(url) {
+            const fullUrl = url.startsWith('http') ? url : 'http://' + url;
+            webview.src = fullUrl;
+        }
+
+        function createTab(label) {
+            const tabIndex = tabs.length;
+            tabs.push(label);
+            const tab = document.createElement('div');
+            tab.className = 'tab';
+            tab.innerText = label;
+            tab.onclick = () => {
+                activeTabIndex = tabIndex;
+                setActiveTab(tabIndex);
+            };
+            tabsContainer.appendChild(tab);
+            setActiveTab(tabIndex);
+        }
+
+        function setActiveTab(index) {
+            Array.from(tabsContainer.children).forEach((tab, i) => {
+                tab.className = i === index ? 'tab active' : 'tab';
+            });
+            webview.src = tabs[index].url;
+            urlInput.value = tabs[index].url;
+        }
+
+        document.getElementById('load').addEventListener('click', () => {
+            const url = urlInput.value;
+            if (!tabs[activeTabIndex]) {
+                createTab(url);
+            }
+            tabs[activeTabIndex] = { label: url, url: url };
+            loadUrl(url);
+        });
+
+        document.getElementById('newTab').addEventListener('click', () => {
+            createTab('New Tab');
+        });
+
+        document.getElementById('incognito').addEventListener('click', () => {
+            createTab('Incognito Tab');
+            loadUrl('about:blank');
+        });
+
+        // Initial tab
+        createTab('Home');
+    </script>
+</body>
+</html>
