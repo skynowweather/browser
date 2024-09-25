@@ -101,12 +101,14 @@
 
         document.getElementById('load').addEventListener('click', () => {
             const url = urlInput.value;
-            if (tabs[activeTabIndex]) {
-                tabs[activeTabIndex].url = url;
-                loadUrl(url);
-            } else {
-                createTab(url, url);
-                loadUrl(url);
+            if (url) {
+                if (tabs[activeTabIndex]) {
+                    tabs[activeTabIndex].url = url;
+                    loadUrl(url);
+                } else {
+                    createTab(url, url);
+                    loadUrl(url);
+                }
             }
         });
 
